@@ -1,0 +1,8 @@
+# 1. Ignore everything by default
+*
+
+# 2. Unignore the .gitignore file so it stays in the repo
+!.gitignore
+
+# 3. Unignore all .s (assembly) files
+!*.s
