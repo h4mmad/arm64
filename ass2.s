@@ -33,21 +33,20 @@ and median in w1.
 .type calc_avg_median,%function
     calc_avg_median:
         mov x1, #0              // Loop counter
-        mov w2, #0             // Sum accumulator
+        mov x2, #0             // Sum accumulator
         mov x11, #num_grades
 
     loop_start:
         cmp x1, x11             // Compare counter (x9) with num_grades (x11)
         bge calc_done           // If counter >= num_grades, exit loop
 
-        ldr w12, [x0, x1, LSL #2] // Load array element (4 bytes per element)
-        add w2, w2, w12       // Add current grade to sum
+        ldr x12, [x0, x1, LSL #2] // Load array element (4 bytes per element)
+        add x2, x2, x12       // Add current grade to sum
         add x1, x1, #1          // Increment loop counter
         b loop_start            // Repeat loop
 
     calc_done:
-        mov w11, #num_grades
-        udiv w0, w2, w11       // Calculate average (x10 / x11)
+        udiv x0, x2, x11       // Calculate average (x10 / x11)
         ret                     // Return result in x0
 
 
@@ -74,11 +73,12 @@ _start:
         mov x0, x10 
         bl calc_avg_median
         
+        
         // Prepare argument to print fullname
-        adr x0, full_name_format
-        add x1, x9, #s_fname
-        add x2, x9, #s_lname
-        bl printf
+        // adr x0, full_name_format
+        // add x1, x9, #s_fname
+        // add x2, x9, #s_lname
+        // bl printf
         
         
 
