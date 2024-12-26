@@ -52,16 +52,17 @@ fi
 
 # Run with QEMU
 echo "Running $BIN_FILE with QEMU..."
-qemu-aarch64 -L $ROOT_FS -g 1234 $BIN_FILE &
-QEMU_PID=$!
+# qemu-aarch64 -L $ROOT_FS -g 1234 $BIN_FILE &
+# QEMU_PID=$!
 
-# Start GDB
-echo "Starting GDB with TUI and register layout..."
-gdb-multiarch -ex "target remote localhost:1234" \
-              -ex "tui enable" \
-              -ex "layout regs" \
-              -ex "set auto-load off" \
-              $BIN_FILE
+qemu-aarch64 -L $ROOT_FS $BIN_FILE
+
+# # Start GDB
+# echo "Starting GDB with TUI and register layout..."
+# gdb-multiarch -ex "target remote localhost:1234" \
+#               -ex "tui enable" \
+#               -ex "layout regs" \
+#               $BIN_FILE
 
 # Cleanup
 if kill -0 $QEMU_PID 2>/dev/null; then

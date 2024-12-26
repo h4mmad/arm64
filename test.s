@@ -1,26 +1,18 @@
-.data
-varA: .quad 1
+.section .data
+my_string: .asciz "Hello, World!%d\n"
 
-.text
-.global main
-main:
+.section .text
+.global _start
+
+_start:
+   
+    ldr x0, =my_string
+    mov x1, #69
+
     
+    bl printf
 
-
-    //revised equation
-    //value = (varA / -100) * (varB + varC)
-    mov x1, #60
-    mov x2, #50
-    mov x7, #-100
-    udiv x8, x0, x7
-    // x8 will no contain (varA / -100)
-    // (10/-100) so 0
-
-    add x9, x1, x2
-    // x9 will now contain (varB + varC)
-
-
-
-
-    mov x0, #0
-    ret
+    
+    mov x8, 93                  
+    mov x0, 0                   
+    svc 0
