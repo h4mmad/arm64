@@ -19,6 +19,7 @@
     .equ num_grades, 7  // number of elements
 
     full_name_format: .asciz "The student's full name is %s %s.\n"
+    avg_format: .asciz "The grade average is: %d.\n"
     element_format: .asciz "The element at index %d is %d.\n"
 .text
 
@@ -47,10 +48,9 @@ and median in w1.
 
     calc_done:
         mov w11, #num_grades
-        udiv w0, w2, w11       // Calculate average (x10 / x11)
+        udiv w0, w2, w11   // Calculate average (x10 / x11)
         ret                     // Return result in x0
-
-
+        
 /*
 This subroutine has two arguments:
 1. Start address of array - x0
@@ -67,23 +67,38 @@ get_element_by_index:
 .type _start,%function
 _start:
 
-        adr x9, student          // Load the base address of `student` into X9
-        add x10, x9, #s_grades   // Load the address of the grades array into X10
+    /*  Load the base of student struct into x19, which is a callee-saved register non-volatile
+        will remain intact across function calls. (x19-x28)
 
-                   
-        mov x0, x10 
-        bl calc_avg_median
-        
-        // Prepare argument to print fullname
-        adr x0, full_name_format
-        add x1, x9, #s_fname
-        add x2, x9, #s_lname
-        bl printf
-        
-        
+        Load the start address of grades array into x20, by using offset.
+    */ 
 
-    
-        // Linux specific
-        mov x8, 93                  
-        mov x0, 0                   
-        svc 0
+    adr x19, student
+    add x20, x19, #s_grades   
+
+    // First printf: Print full name
+
+    adr x0, full_name_format   // Format string
+    add x1, x19, #s_fname        // Address of "Siti"
+    add x2, x19, #s_lname        // Address of "Aminah"
+    bl printf
+
+
+
+    // Prepare params for calculating avg, pass into x0, the start address of array
+    // Return value in w0
+    mov x0, x20
+    bl calc_avg_median
+
+    // store in x0, the format address.
+    // store in w1 the avg value
+    mov w1, w0
+    ldr x0, =avg_format
+    bl printf
+
+
+        
+    // Linux specific
+    mov x8, 93                  
+    mov x0, 0                   
+    svc 0
